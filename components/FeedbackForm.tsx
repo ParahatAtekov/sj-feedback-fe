@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useRef } from 'react';
 import { submitFeedback } from '@/app/actions/feedback';
 
 export default function FeedbackForm() {
+  const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
-  // ← MOVE THIS FUNCTION TO THE TOP
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -26,7 +26,7 @@ export default function FeedbackForm() {
       const result = await submitFeedback(formData);
       if ('success' in result) {
         setMessage({ type: 'success', text: 'Feedback submitted!' });
-        e.currentTarget.reset();
+        formRef.current?.reset();
         setPreview(null);
       } else {
         setMessage({ type: 'error', text: result.error });
@@ -35,7 +35,7 @@ export default function FeedbackForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Satisfaction</label>
         <select
