@@ -8,6 +8,8 @@ interface FeedbackListClientProps {
   feedback: Feedback[];
 }
 
+ 
+
 export const FeedbackListClient = memo(function FeedbackListClient({ feedback }: FeedbackListClientProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -22,10 +24,14 @@ export const FeedbackListClient = memo(function FeedbackListClient({ feedback }:
               </a>
               <div className="mt-2 relative h-48 w-full rounded overflow-hidden bg-gray-50">
                 <Image
-                  src={item.screenshot_url}
+                  src={item.screenshot_url || ''}
                   alt="Feedback screenshot"
                   fill
                   className="object-contain"
+                  loading="lazy"
+                  // onError removed to avoid parser issues; image failures will simply show broken image.
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority={false}
                 />
               </div>
             </div>
