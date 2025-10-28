@@ -45,28 +45,28 @@ export default function FeedbackForm({
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-white text-sm font-medium mb-2">
-          Comment (optional)
+        <label className="block text-white text-sm font-extralight mb-2">
+          Feedback
         </label>
         <textarea
           name="comment"
           rows={4}
           maxLength={500}
-          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:ring-2 focus:ring-[#D6FE51] focus:border-[#D6FE51] transition"
-          placeholder="Share your thoughts..."
+          className="w-full px-4 py-3 bg-zinc-800 rounded-md text-white text-xs font-extralight placeholder-gray-400 focus:ring-2 focus:ring-[#D6FE51] focus:border-[#D6FE51] transition"
+          placeholder="Share your feedback to earn rewards!"
         />
       </div>
 
       <div>
-        <label className="block text-white text-sm font-medium mb-2">
-          Screenshot (optional)
+        <label className="block text-white text-sm font-extralight mb-2">
+          Screenshot
         </label>
         <input
           type="file"
           name="screenshot"
           accept="image/png,image/jpeg"
           onChange={handleFileChange}
-          className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#D6FE51] file:text-black hover:file:bg-[#c0e645]"
+          className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:bg-zinc-800 file:text-white file:font-extralight hover:file:bg-[#D6FE51] hover:file:text-black transition"
         />
         {preview && (
           <div className="mt-3">

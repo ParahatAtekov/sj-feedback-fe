@@ -36,7 +36,7 @@ export default function FeedbackModal({
 
   const modal = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-80">
-      <div className="relative bg-black border border-[#D6FE51] rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-black border rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-white hover:text-gray-300"
@@ -45,13 +45,15 @@ export default function FeedbackModal({
         </button>
 
         <div className="p-8">
-          <h2 className="text-2xl font-bold text-white mb-6 text-center">
-            Submit Feedback
+          <h2 className="text-xl font-regular text-white mb-6 text-left">
+            Give Feedback
           </h2>
 
+          <h3 className="text-white font-extralight text-center mb-6" >Share your feedback to earn rewards!</h3>
+
           {/* Satisfaction Prompt */}
-          <p className="text-white text-center mb-6">
-            Would you be disappointed if you couldn’t use <span className="font-semibold">stablejack</span> anymore?
+          <p className="text-white font-thin text-center mb-6">
+            Would you be disappointed if you couldn’t use stablejack anymore? 
           </p>
 
           {/* Satisfaction Options (Squares) */}
@@ -69,7 +71,7 @@ export default function FeedbackModal({
                 />
                 <div
                   className={`
-                    w-6 h-6 border-2 flex items-center justify-center
+                    w-6 h-6 border-2 flex items-center justify-center rounded-md
                     peer-checked:bg-[#D6FE51] peer-checked:border-[#D6FE51]
                     border-white transition-all
                   `}
@@ -78,7 +80,7 @@ export default function FeedbackModal({
                     <div className="w-3 h-3 bg-black rounded-sm" />
                   )}
                 </div>
-                <span className="ml-2 text-white text-sm">
+                <span className="ml-2 text-white font-thin text-sm">
                   {opt.label}
                 </span>
               </label>
