@@ -8,7 +8,7 @@ export default function Home() {
         Welcome to Feedback App
       </h1>
       <p className="text-gray-400 mb-8">
-        Share your experience in seconds — no page reloads.
+        Share your experience in seconds. We value your feedback!
       </p>
       <FeedbackButton />
     </div>
