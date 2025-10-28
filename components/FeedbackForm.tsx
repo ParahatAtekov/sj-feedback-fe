@@ -1,33 +1,40 @@
+// components/FeedbackForm.tsx
 'use client';
 
-import { useState, useTransition, useRef } from 'react';
+import { useState, useTransition } from 'react';
 import { submitFeedback } from '@/app/actions/feedback';
 
-export default function FeedbackForm() {
-  const formRef = useRef<HTMLFormElement>(null);
+export default function FeedbackForm({
+  satisfaction,
+  onSuccess,
+}: {
+  satisfaction: string;
+  onSuccess?: () => void;
+}) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-    } else {
-      setPreview(null);
-    }
+    if (file) setPreview(URL.createObjectURL(file));
+    else setPreview(null);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!satisfaction) return;
+
     const formData = new FormData(e.currentTarget);
+    formData.set('satisfaction', satisfaction); // Override with selected value
 
     startTransition(async () => {
       const result = await submitFeedback(formData);
       if ('success' in result) {
-        setMessage({ type: 'success', text: 'Feedback submitted!' });
-        formRef.current?.reset();
+        setMessage({ type: 'success', text: 'Thank you! Feedback submitted.' });
+        e.currentTarget.reset();
         setPreview(null);
+        onSuccess?.();
       } else {
         setMessage({ type: 'error', text: result.error });
       }
@@ -35,58 +42,48 @@ export default function FeedbackForm() {
   };
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Satisfaction</label>
-        <select
-          name="satisfaction"
-          required
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-        >
-          <option value="">Select...</option>
-          <option value="very disappointed">Very Disappointed</option>
-          <option value="somewhat disappointed">Somewhat Disappointed</option>
-          <option value="not disappointed">Not Disappointed</option>
-        </select>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Comment (optional)</label>
+        <label className="block text-white text-sm font-medium mb-2">
+          Comment (optional)
+        </label>
         <textarea
           name="comment"
           rows={4}
           maxLength={500}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:ring-2 focus:ring-[#D6FE51] focus:border-[#D6FE51] transition"
           placeholder="Share your thoughts..."
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Screenshot (optional)</label>
+        <label className="block text-white text-sm font-medium mb-2">
+          Screenshot (optional)
+        </label>
         <input
           type="file"
           name="screenshot"
           accept="image/png,image/jpeg"
-          onChange={handleFileChange}  // ← Now it's defined!
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          onChange={handleFileChange}
+          className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#D6FE51] file:text-black hover:file:bg-[#c0e645]"
         />
         {preview && (
-          <div className="mt-2">
-            <img src={preview} alt="Preview" className="max-h-48 rounded mx-auto" />
+          <div className="mt-3">
+            <img src={preview} alt="Preview" className="max-h-48 rounded mx-auto border border-gray-700" />
           </div>
         )}
       </div>
 
       <button
         type="submit"
-        disabled={isPending}
-        className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+        disabled={isPending || !satisfaction}
+        className="w-full py-3 px-4 bg-[#D6FE51] text-black font-medium rounded-md hover:bg-[#c0e645] disabled:opacity-50 disabled:cursor-not-allowed transition"
       >
         {isPending ? 'Submitting...' : 'Submit Feedback'}
       </button>
 
       {message && (
-        <p className={`text-center font-medium ${message.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+        <p className={`text-center font-medium ${message.type === 'success' ? 'text-[#D6FE51]' : 'text-red-400'}`}>
           {message.text}
         </p>
       )}
