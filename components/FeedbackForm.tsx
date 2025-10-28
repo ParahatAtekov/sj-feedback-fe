@@ -1,7 +1,7 @@
 // components/FeedbackForm.tsx
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useRef } from 'react';
 import { submitFeedback } from '@/app/actions/feedback';
 
 export default function FeedbackForm({
@@ -14,6 +14,7 @@ export default function FeedbackForm({
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null); // ← ADD REF
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -26,13 +27,13 @@ export default function FeedbackForm({
     if (!satisfaction) return;
 
     const formData = new FormData(e.currentTarget);
-    formData.set('satisfaction', satisfaction); // Override with selected value
+    formData.set('satisfaction', satisfaction);
 
     startTransition(async () => {
       const result = await submitFeedback(formData);
       if ('success' in result) {
         setMessage({ type: 'success', text: 'Thank you! Feedback submitted.' });
-        e.currentTarget.reset();
+        formRef.current?.reset(); // ← USE REF
         setPreview(null);
         onSuccess?.();
       } else {
@@ -42,7 +43,7 @@ export default function FeedbackForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label className="block text-white text-sm font-medium mb-2">
           Comment (optional)
